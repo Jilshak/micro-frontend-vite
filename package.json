@@ -1,0 +1,26 @@
+{
+  "name": "micro-frontend-vite",
+  "version": "1.0.0",
+  "description": "A micro-frontend example using Vite Module Federation",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "npm run install:host && npm run install:remote",
+    "install:host": "cd host && npm install",
+    "install:remote": "cd remote && npm install",
+    "dev:host": "cd host && npm run dev",
+    "dev:remote": "cd remote && npm run dev",
+    "dev": "concurrently \"npm run dev:remote\" \"npm run dev:host\"",
+    "docs": "echo 'See documentation in the docs/ directory'"
+  },
+  "keywords": [
+    "micro-frontend",
+    "vite",
+    "module-federation",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}

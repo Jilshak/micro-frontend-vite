@@ -1,8 +1,6 @@
-# Micro-Frontend with Vite
+# Micro-Frontend with Vite Module Federation
 
-This project demonstrates a micro-frontend architecture using Vite Module Federation. It consists of two applications:
-- **Host Application**: The main application that consumes remote modules
-- **Remote Application**: The remote application that exposes modules for consumption
+This repository demonstrates a micro-frontend architecture using Vite's Module Federation plugin. It showcases how to share components and state between two separate Vite applications.
 
 ## Table of Contents
 - [Architecture](#architecture)
@@ -11,6 +9,7 @@ This project demonstrates a micro-frontend architecture using Vite Module Federa
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [How It Works](#how-it-works)
+- [Documentation](#documentation)
 
 ## Architecture
 
@@ -28,8 +27,8 @@ graph TB
 This micro-frontend application demonstrates how to share components and state between two separate Vite applications using Module Federation:
 
 1. The **Remote Application** exposes:
-   - A simple [Button](./remote/src/Button.jsx) component
-   - A [Zustand](https://github.com/pmndrs/zustand) store for state management with persistence
+   - A simple Button component
+   - A Zustand store for state management with persistence
 
 2. The **Host Application** consumes:
    - The Button component from the remote
@@ -48,28 +47,27 @@ The key feature is that both applications share the same state, so when you clic
 1. Install dependencies for both applications:
 
 ```bash
-# In the host directory
+# Install dependencies for both applications at once
 npm install
 
-# In the remote directory
-npm install
+# Or install individually
+cd host && npm install && cd ..
+cd remote && npm install && cd ..
 ```
 
-2. Start the remote application first:
+2. Start both applications:
 
 ```bash
-# In the remote directory
+# Start both applications concurrently
 npm run dev
+
+# Or start individually (remote must be started first)
+cd remote && npm run dev
+# In another terminal
+cd host && npm run dev
 ```
 
-3. Start the host application:
-
-```bash
-# In the host directory
-npm run dev
-```
-
-4. Open your browser:
+3. Open your browser:
    - Remote app: http://localhost:5001
    - Host app: http://localhost:3000
 
@@ -83,13 +81,20 @@ npm run dev
 │   │   └── main.jsx     # Host application entry point
 │   ├── vite.config.js   # Host Vite configuration with Module Federation
 │   └── package.json     # Host dependencies
-└── remote               # Remote application
-    ├── src
-    │   ├── App.jsx      # Remote application component
-    │   ├── Button.jsx   # Component exposed to host
-    │   └── store.js     # State management exposed to host
-    ├── vite.config.js   # Remote Vite configuration with Module Federation
-    └── package.json     # Remote dependencies
+├── remote               # Remote application
+│   ├── src
+│   │   ├── App.jsx      # Remote application component
+│   │   ├── Button.jsx   # Component exposed to host
+│   │   └── store.js     # State management exposed to host
+│   ├── vite.config.js   # Remote Vite configuration with Module Federation
+│   └── package.json     # Remote dependencies
+├── docs                 # Documentation
+│   ├── architecture.md  # Architecture documentation
+│   ├── development.md   # Development guide
+│   └── modules.md       # Module documentation
+├── start-all.sh         # Bash script to start both applications
+├── start-all.ps1        # PowerShell script to start both applications
+└── package.json         # Root package.json with convenience scripts
 ```
 
 ## How It Works
@@ -98,11 +103,11 @@ npm run dev
 
 The magic happens through Vite's Module Federation plugin:
 
-1. **Remote Configuration** ([remote/vite.config.js](./remote/vite.config.js)):
-   - Exposes the [Button](./remote/src/Button.jsx) component and [store](./remote/src/store.js)
+1. **Remote Configuration** (`remote/vite.config.js`):
+   - Exposes the Button component and store
    - Configures shared dependencies (react, react-dom, zustand)
 
-2. **Host Configuration** ([host/vite.config.js](./host/vite.config.js)):
+2. **Host Configuration** (`host/vite.config.js`):
    - Imports the remote module from `http://localhost:5001/assets/remoteEntry.js`
    - Maps it to `remoteApp` for easy importing
 
@@ -128,3 +133,11 @@ It also imports and uses the state management functions:
 import useStore from 'remoteApp/store';
 const { count, increment } = useStore()
 ```
+
+## Documentation
+
+For more detailed information, please refer to the documentation in the [docs](./docs) directory:
+
+- [Architecture](./docs/architecture.md)
+- [Development Guide](./docs/development.md)
+- [Module Documentation](./docs/modules.md)
